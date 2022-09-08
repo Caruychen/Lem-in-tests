@@ -5,7 +5,7 @@ ECHO_PERCENT () {
 }
 
 RUN_TEST () {
-				SIZE=1000
+				SIZE=100
 				SAME_OR_LESS=0
 				ONE_MORE=0
 				TWO_MORE=0
@@ -14,17 +14,15 @@ RUN_TEST () {
 				for ((INDEX = 0; INDEX < $SIZE; INDEX++))
 				do
 								../generator $1 > tmp
-								RES=`(../lem-in -q < tmp)`
-								RES=`(echo $RES | grep -Eo '[0-9]{1,}')`
-								TEST=`(cut -d' ' -f2 <<< $RES)`
-								SAMPLE=`(cut -d' ' -f3 <<< $RES)`
-								DIFF=$(echo "$SAMPLE - $TEST" | bc)
+								RES=$(../lem-in < tmp)
+								EXPECT=$(echo "$RES" | grep -m 1 'lines required' | awk 'NF>1{print $NF}')
+								OUT=$(echo "$RES" | grep '^L' | wc -l)
+								DIFF=$(echo "$OUT - $EXPECT" | bc)
 								if [ $DIFF -le 0 ]
 								then
 												SAME_OR_LESS=$(echo "$SAME_OR_LESS + 1" | bc)
 								elif [ $DIFF -eq 1 ]
 								then
-												echo $RES
 												ONE_MORE=$(echo "$ONE_MORE + 1" | bc)
 								elif [ $DIFF -eq 2 ]
 								then
