@@ -4,7 +4,7 @@ RED='\033[0;31m'
 NC='\033[0m'
 RUN_TEST () {
 				echo -n "Testing on $1: "
-				RES=$(../12_Lem_in/lem-in < ./cases/$1)
+				RES=$(../lem-in < ./cases/$1)
 				EXPECT=$(cat ./cases/$1 | grep -m 1 'lines required' | awk 'NF>1{print $NF}')
 				OUT=$(echo "$RES" | grep '^L' | wc -l)
 				DIFF=$(echo "$OUT - $EXPECT" | bc)
